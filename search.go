@@ -1,5 +1,10 @@
 package pdfhunter
 
+import (
+	"strings"
+
+	"github.com/PuerkitoBio/goquery"
+)
 
 func getLinks(url string) ([]string, error) {
 	links := []string{}
