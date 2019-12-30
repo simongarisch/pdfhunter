@@ -1,4 +1,4 @@
-module github.com/simongarisch/pdfhunter
+module pdfhunter
 
 go 1.13
 
