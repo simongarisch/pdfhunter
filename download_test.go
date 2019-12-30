@@ -43,3 +43,36 @@ func TestFileExists(t *testing.T) {
 		t.Fatalf("%q should not exist in %q", filePath, dir)
 	}
 }
+
+func TestDownloadFile(t *testing.T) {
+	var fileName string
+	var exists bool
+	var err error
+
+	fileName, err = getPdfName(LINK)
+	if err != nil {
+		t.Fatalf("error in getPdfName - %s", err)
+	}
+
+	exists, err = fileExists(fileName)
+	if err != nil {
+		t.Fatalf("error in fileExists - %s", err)
+	}
+
+	if exists { // file already exists
+		err := os.Remove(fileName)
+		if err != nil {
+			t.Fatalf("error deleting test file - %s", err)
+		}
+	}
+
+	DownloadFile(fileName, LINK)
+	exists, _ = fileExists(fileName)
+	if !exists {
+		t.Fatal("Downloaded should have been successful")
+	}
+	os.Remove(fileName)
+}
+
+func TestDownloadAll(t *testing.T) {
+}
