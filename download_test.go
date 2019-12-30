@@ -75,4 +75,25 @@ func TestDownloadFile(t *testing.T) {
 }
 
 func TestDownloadAll(t *testing.T) {
+	oldGetLinks := getLinks
+	_, err := oldGetLinks(URL)
+	if err != nil {
+		t.Fatal("Patching was no good...")
+	}
+	getLinks = oldGetLinks
+	//defer func() { getLinks = oldGetLinks }()
+
+	/*
+		getLinks = func(url string) ([]string, error) {
+			links, err := oldGetLinks(url)
+			if err != nil {
+				return links, err
+			}
+			if len(links) > 10 {
+				links = links[:10]
+			}
+			return links, err
+		}
+	*/
+	//DownloadAll("test_folder", URL)
 }
