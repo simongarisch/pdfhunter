@@ -1,7 +1,10 @@
 package pdfhunter
 
 import (
+	"net/http"
 	"os"
+	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -74,26 +77,77 @@ func TestDownloadFile(t *testing.T) {
 	os.Remove(fileName)
 }
 
-func TestDownloadAll(t *testing.T) {
-	oldGetLinks := getLinks
-	_, err := oldGetLinks(URL)
+func deleteTestPdfs() error {
+	files, err := filepath.Glob(filepath.Join("test_data", "*"))
 	if err != nil {
-		t.Fatal("Patching was no good...")
+		return err
 	}
-	getLinks = oldGetLinks
-	//defer func() { getLinks = oldGetLinks }()
 
-	/*
-		getLinks = func(url string) ([]string, error) {
-			links, err := oldGetLinks(url)
+	for _, file := range files {
+		if strings.HasSuffix(file, ".pdf") {
+			err = os.Remove(file)
 			if err != nil {
-				return links, err
+				return err
 			}
-			if len(links) > 10 {
-				links = links[:10]
-			}
-			return links, err
 		}
-	*/
-	//DownloadAll("test_folder", URL)
+	}
+	return nil
+}
+
+func countPdfs() (int, error) {
+	counter := 0
+
+	files, err := filepath.Glob(filepath.Join("test_data", "*"))
+	if err != nil {
+		return counter, err
+	}
+
+	for _, file := range files {
+		if strings.HasSuffix(file, ".pdf") {
+			if strings.HasSuffix(file, ".pdf") {
+				counter++
+			}
+		}
+	}
+	return counter, err
+}
+
+func serveTestLinks(ready chan bool) {
+	http.Handle("/", http.FileServer(http.Dir("./test_data")))
+	go http.ListenAndServe(":3001", nil)
+	ready <- true
+}
+
+func TestDownloadAll(t *testing.T) {
+	var count int
+	var err error
+
+	err = deleteTestPdfs()
+	if err != nil {
+		t.Fatalf("error in deleteTestPdfs - %s", err)
+	}
+
+	ready := make(chan bool)
+	go serveTestLinks(ready)
+	<-ready
+
+	err = DownloadAll("test_data", "http://localhost:3001/links.html")
+	if err != nil {
+		t.Fatalf("error in DownloadAll - %s", err)
+	}
+
+	// there are 4 PDF links, so 4 PDF files should be downloaded
+	count, err = countPdfs()
+	if err != nil {
+		t.Fatalf("error in countPdfs - %s", err)
+	}
+
+	if count != 4 {
+		t.Fatal("expected exactly 4 PDF files")
+	}
+
+	err = deleteTestPdfs()
+	if err != nil {
+		t.Fatalf("error in deleteTestPdfs - %s", err)
+	}
 }
