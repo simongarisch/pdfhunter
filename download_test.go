@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 )
 
 const (
@@ -130,6 +131,7 @@ func TestDownloadAll(t *testing.T) {
 	ready := make(chan bool)
 	go serveTestLinks(ready)
 	<-ready
+	time.Sleep(2 * time.Second) // just to be sure
 
 	err = DownloadAll("test_data", "http://localhost:3001/links.html")
 	if err != nil {
