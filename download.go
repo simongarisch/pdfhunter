@@ -44,6 +44,8 @@ func DownloadFile(filePath string, link string) error {
 		return nil // don't download the file again
 	}
 
+	link = applyURLModifications(link)
+
 	// read link
 	resp, err := http.Get(link)
 	if err != nil {
