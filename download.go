@@ -49,7 +49,7 @@ func fileExists(filePath string) (bool, error) {
 func DownloadFile(filePath string, link string) error {
 	exists, _ := fileExists(filePath)
 	if exists {
-		fmt.Printf("File %q already exists", filePath)
+		fmt.Printf("File %q already exists\n", filePath)
 		return nil // don't download the file again
 	}
 
