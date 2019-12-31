@@ -1,3 +1,5 @@
+// Download PDF links from a webpage
+
 package pdfhunter
 
 import (
@@ -8,6 +10,16 @@ import (
 	"path/filepath"
 	"strings"
 )
+
+// Example for our package.
+func Example() {
+	url := "https://github.com/EbookFoundation/free-programming-books/blob/master/free-programming-books.md"
+	folder := "ebooks"
+	err := DownloadAll(folder, url)
+	if err != nil {
+		panic(err)
+	}
+}
 
 func getPdfName(link string) (string, error) {
 	var name string
