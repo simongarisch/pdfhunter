@@ -1,4 +1,6 @@
-// Download PDF links from a webpage
+// pdfhunter
+//
+//Download PDF links from a webpage.
 
 package pdfhunter
 
