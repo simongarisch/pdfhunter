@@ -36,6 +36,7 @@ func fileExists(filePath string) (bool, error) {
 	return true, nil
 }
 
+// DownloadFile downloads a PDF link to a specified file path.
 func DownloadFile(filePath string, link string) error {
 	exists, _ := fileExists(filePath)
 	if exists {
@@ -63,6 +64,7 @@ func DownloadFile(filePath string, link string) error {
 	return err
 }
 
+// DownloadAll downloads all PDF links at a particular url address.
 func DownloadAll(folder string, url string) error {
 	links, err := getLinks(url)
 	if err != nil {
